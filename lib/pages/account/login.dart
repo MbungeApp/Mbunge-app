@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mbunge/blocs/authentication/authentication_bloc.dart';
 import 'package:mbunge/blocs/login/login_bloc.dart';
 import 'package:mbunge/models/http/_http.dart';
 import 'package:mbunge/repository/network/user_repository.dart';
@@ -47,7 +50,14 @@ class _LoginPageState extends State<LoginPage> {
             showInSnackBar("Loading", Colors.grey);
           }
           if (state is LoginSuccess) {
-            showInSnackBar("Success, Hello ${state.username}", Colors.green);
+            showInSnackBar(
+                "Success, Hello ${state.user.firstName}", Colors.green);
+            _formKey.currentState.reset();
+            Timer(Duration(seconds: 4), () {
+              BlocProvider.of<AuthenticationBloc>(context)
+                  .add(LoggedIn(user: state.user));
+              Navigator.pushNamed(context, "/home");
+            });
           }
           if (state is LoginError) {
             showInSnackBar("Error", Colors.orange);

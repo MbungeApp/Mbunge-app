@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mbunge/blocs/authentication/authentication_bloc.dart';
 import 'package:mbunge/pages/account/register_1.dart';
 
 import 'widgets/clipper.dart';
@@ -12,6 +13,14 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   PageController pageController = PageController();
+  // AuthenticationBloc authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+
+
+  // @override
+  // void dispose() {
+  //   authenticationBloc
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
