@@ -37,10 +37,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       await sharePreferenceRepo.saveToken(loginResponse.token);
       await sharePreferenceRepo.saveUser(
-        loginResponse.user.toJson().toString(),
+        loginResponse.user.toString(),
       );
 
-      yield LoginSuccess(loginResponse.user.firstName);
+      yield LoginSuccess(loginResponse.user);
     } catch (e) {
       print("Exception: $e");
       yield LoginError();
