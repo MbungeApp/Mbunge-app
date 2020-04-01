@@ -54,9 +54,9 @@ class _RegisterPage2State extends State<RegisterPage2> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   buildTitle(context),
-                  buildUploadPic(context),
-                  buildSubtitle(context),
-                  buildDOBTextfield(),
+                  // buildUploadPic(context),
+                  // buildSubtitle(context),
+                  // buildDOBTextfield(),
                   buildCountyDropDown(),
                   buildGenderRadio(),
                   buildDoneButton(),
@@ -171,11 +171,11 @@ class _RegisterPage2State extends State<RegisterPage2> {
                 ),
               );
             }).toList(),
-              onChanged: (String value) {
-                setState(() {
-                  countyValue = value;
-                });
-              },
+            onChanged: (String value) {
+              setState(() {
+                countyValue = value;
+              });
+            },
           )
           // child: DropdownButton<String>(
           //   isExpanded: true,
