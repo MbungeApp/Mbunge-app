@@ -7,16 +7,22 @@ abstract class AuthenticationEvent extends Equatable {
 }
 
 class AppStarted extends AuthenticationEvent {
-  final bool isAuth;
 
-  AppStarted({this.isAuth});
   @override
-  String toString() => "Appstarted event: $isAuth";
+  String toString() => "Appstarted event";
+
 }
 
 class LoggedIn extends AuthenticationEvent {
+  final LoginUser user;
+
+  LoggedIn({this.user});
+
   @override
   String toString() => 'LoggedIn';
+
+  @override
+  List<Object> get props => [user];
 }
 
 class LoggedOut extends AuthenticationEvent {
