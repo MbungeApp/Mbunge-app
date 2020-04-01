@@ -32,15 +32,22 @@ class HttpClient {
   Future<http.Response> getRequest({
     String url,
   }) async {
-    final reqUrl = '$baseUrl/$url';
+    final reqUrl = '$baseUrl$url';
     String token = await sharePreferenceRepo.getToken();
-    return await http.get(reqUrl, headers: headers(token));
+    var header2 = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+
+    return await http.get(reqUrl, headers: header2);
   }
 
   Future<http.Response> postRequest(
       {String url, Map<String, dynamic> body}) async {
     final reqUrl = '$baseUrl$url';
     String token = await sharePreferenceRepo.getToken();
+    print(jsonEncode(body));
     return await http.post(reqUrl, headers: header2, body: jsonEncode(body));
   }
 
