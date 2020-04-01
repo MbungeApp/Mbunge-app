@@ -16,7 +16,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   Stream<RegisterState> mapEventToState(
     RegisterEvent event,
   ) async* {
-    if (event is RegisterUser) {
+    if (event is RegisterUserEvent) {
       yield* _mapRegisterUsertoState(event.registerRequest);
     }
   }
@@ -34,6 +34,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       print("##################################");
       yield RegisterSuccess();
     } catch (e) {
+      print("Exception: $e");
       yield RegisterError();
     }
   }
