@@ -8,8 +8,6 @@ List<Participation> participationFromJson(String str) =>
     List<Participation>.from(
         json.decode(str).map((x) => Participation.fromJson(x)));
 
-String participationToJson(List<Participation> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Participation {
   Participation({
