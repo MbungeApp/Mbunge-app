@@ -8,6 +8,8 @@ abstract class SharePreferenceImpl {
 
   Future<bool> saveUser(String user);
   Future<String> getUsert();
+
+  Future clearSharePreferences();
 }
 
 class SharePreferenceRepo implements SharePreferenceImpl {
@@ -45,5 +47,11 @@ class SharePreferenceRepo implements SharePreferenceImpl {
   Future<bool> saveUser(String user) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setString("user", user);
+  }
+
+  @override
+  Future clearSharePreferences() async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
   }
 }
