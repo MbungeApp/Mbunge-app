@@ -1,12 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mbunge/models/http/_http.dart';
 
 class EventDetail extends StatefulWidget {
+  final Event event;
+
+  const EventDetail({Key key, this.event}) : super(key: key);
   @override
   _EventDetailState createState() => _EventDetailState();
 }
 
 class _EventDetailState extends State<EventDetail> {
+  Event get event => widget.event;
   ScrollController scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
@@ -29,7 +34,7 @@ class _EventDetailState extends State<EventDetail> {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                           image: NetworkImage(
-                            "https://picsum.photos/seed/picsum/200/300",
+                            event.picture,
                           ),
                           fit: BoxFit.cover,
                           colorFilter: ColorFilter.mode(
@@ -45,7 +50,7 @@ class _EventDetailState extends State<EventDetail> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          "Event name",
+                          event.name,
                           style: Theme.of(context)
                               .textTheme
                               .headline6
@@ -54,12 +59,8 @@ class _EventDetailState extends State<EventDetail> {
                         Opacity(
                           opacity: 0.7,
                           child: Text(
-                            "It is a long established fact that a reader will be distracted" +
-                                " by the readable content of a page when looking at its layout. " +
-                                "The point of using Lorem Ipsum is that it has a more-or-less normal" +
-                                " distribution of letters, as opposed to using 'Content here, content" +
-                                " distribution of letters, as opposed to using 'Content here, content" +
-                                " here', making it look like readable English. ",
+                            event.body,
+                            maxLines: 10,
                             style: TextStyle(color: Colors.white),
                           ),
                         )
@@ -74,53 +75,14 @@ class _EventDetailState extends State<EventDetail> {
             delegate: SliverChildListDelegate(
               [
                 Image.network(
-                  "https://picsum.photos/seed/picsum/200/300",
+                  event.picture,
                   height: deviceSize.height * 0.4,
                   width: deviceSize.width,
                   fit: BoxFit.fill,
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
-                  child: Text("It is a long established fact that a reader will be distracted" +
-                      " by the readable content of a page when looking at its layout. " +
-                      "The point of using Lorem Ipsum is that it has a more-or-less normal" +
-                      " distribution of letters, as opposed to using 'Content here, content" +
-                      " by the readable content of a page when looking at its layout. " +
-                      "The point of using Lorem Ipsum is that it has a more-or-less normal" +
-                      " distribution of letters, as opposed to using 'Content here, content" +
-                      " by the readable content of a page when looking at its layout. " +
-                      " by the readable content of a page when looking at its layout. " +
-                      "The point of using Lorem Ipsum is that it has a more-or-less normal" +
-                      " distribution of letters, as opposed to using 'Content here, content" +
-                      " by the readable content of a page when looking at its layout. " +
-                      "The point of using Lorem Ipsum is that it has a more-or-less normal" +
-                      " distribution of letters, as opposed to using 'Content here, content" +
-                      " by the readable content of a page when looking at its layout. " +
-                      "The point of using Lorem Ipsum is that it has a more-or-less normal" +
-                      " distribution of letters, as opposed to using 'Content here, content" +
-                      " by the readable content of a page when looking at its layout. " +
-                      "The point of using Lorem Ipsum is that it has a more-or-less normal" +
-                      " distribution of letters, as opposed to using 'Content here, content" +
-                      " by the readable content of a page when looking at its layout. " +
-                      "The point of using Lorem Ipsum is that it has a more-or-less normal" +
-                      " distribution of letters, as opposed to using 'Content here, content" +
-                      "The point of using Lorem Ipsum is that it has a more-or-less normal" +
-                      " distribution of letters, as opposed to using 'Content here, content" +
-                      " by the readable content of a page when looking at its layout. " +
-                      "The point of using Lorem Ipsum is that it has a more-or-less normal" +
-                      " distribution of letters, as opposed to using 'Content here, content" +
-                      " by the readable content of a page when looking at its layout. " +
-                      "The point of using Lorem Ipsum is that it has a more-or-less normal" +
-                      " distribution of letters, as opposed to using 'Content here, content" +
-                      " by the readable content of a page when looking at its layout. " +
-                      "The point of using Lorem Ipsum is that it has a more-or-less normal" +
-                      " distribution of letters, as opposed to using 'Content here, content" +
-                      " by the readable content of a page when looking at its layout. " +
-                      "The point of using Lorem Ipsum is that it has a more-or-less normal" +
-                      " distribution of letters, as opposed to using 'Content here, content" +
-                      "The point of using Lorem Ipsum is that it has a more-or-less normal" +
-                      " distribution of letters, as opposed to using 'Content here, content" +
-                      " here', making it look like readable English. "),
+                  child: Text(event.body),
                 ),
               ],
             ),
