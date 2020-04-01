@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
             Timer(Duration(seconds: 4), () {
               BlocProvider.of<AuthenticationBloc>(context)
                   .add(LoggedIn(user: state.user));
-              Navigator.pushNamed(context, "/home");
+              Navigator.popAndPushNamed(context, "/home");
             });
           }
           if (state is LoginError) {
