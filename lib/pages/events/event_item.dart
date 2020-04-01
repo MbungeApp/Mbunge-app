@@ -2,27 +2,27 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mbunge/pages/events/event_detail.dart';
+import 'package:intl/intl.dart';
 
 class EventItem extends StatelessWidget {
   const EventItem({
     Key key,
+    this.name,
+    this.body,
+    this.created,
+    this.image, this.ontap,
   }) : super(key: key);
+  final String name;
+  final String body;
+  final DateTime created;
+  final String image;
+  final Function ontap;
 
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
       padding: EdgeInsets.all(0),
-      onPressed: () {
-        Navigator.push(
-          context,
-          CupertinoPageRoute(
-            builder: (context) {
-              return EventDetail();
-            },
-          ),
-        );
-      },
+     onPressed: ontap,
       child: Material(
         color: Colors.transparent,
         child: Padding(
@@ -58,23 +58,26 @@ class EventItem extends StatelessWidget {
                 children: <Widget>[
                   CircleAvatar(
                     radius: 60,
-                    backgroundImage: AssetImage("assets/images/3.jpg"),
+                    backgroundImage: NetworkImage(image),
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       SizedBox(height: 5),
                       Text(
-                        "12 NOV",
-                        style: Theme.of(context).textTheme.overline,
+                        DateFormat.yMMMMEEEEd().format(
+                          created,
+                        ),
+                        style: Theme.of(context).textTheme.caption,
                       ),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.01),
                       Container(
                         width: MediaQuery.of(context).size.width * 0.57,
                         child: Text(
-                          "Event name",
-                          style: Theme.of(context).textTheme.title,
+                          name,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.headline6,
                         ),
                       ),
                       SizedBox(
@@ -84,8 +87,9 @@ class EventItem extends StatelessWidget {
                         child: Opacity(
                           opacity: 0.6,
                           child: Text(
-                            "This the event about details please give feedback on this design and talk to me ...",
-                            overflow: TextOverflow.clip,
+                            body,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 4,
                           ),
                         ),
                       )
