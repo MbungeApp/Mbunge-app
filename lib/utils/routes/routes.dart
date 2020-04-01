@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mbunge/models/http/_http.dart';
 import 'package:mbunge/pages/_pageindex.dart';
+import 'package:mbunge/pages/home.dart';
 
 class AppRouter {
-  static const String splashRoute = '/';
+  static const String decideRoute = '/';
+  static const String splashRoute = '/splash';
   static const String themeRoute = '/theme';
   static const String accountRoute = '/account';
   static const String verifyRoute = '/verify';
@@ -14,6 +17,9 @@ class AppRouter {
     final args = settings.arguments;
 
     switch (settings.name) {
+      case decideRoute:
+        return _route(Decide());
+        break;
       case splashRoute:
         return _route(SplashScreen());
         break;
@@ -30,7 +36,10 @@ class AppRouter {
         return _route(MainScreen());
         break;
       case particiRoute:
-        return _route(ParticipationDetail());
+        Participation participation = args;
+        return _route(ParticipationDetail(
+          participation: participation,
+        ));
         break;
       default:
         return _route(
