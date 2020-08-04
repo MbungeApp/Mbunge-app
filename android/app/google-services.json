@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "350369397945",
+    "firebase_url": "https://mbungeapp.firebaseio.com",
+    "project_id": "mbungeapp",
+    "storage_bucket": "mbungeapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:350369397945:android:6c9812239742cc4d1bef68",
+        "android_client_info": {
+          "package_name": "ninja.iampato.mbunge"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "350369397945-qrr40jiq3snra13jclqai1hb5qf2k39d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9eqIn1OWdIlNDQopKfR0swjTwVHzF1BE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "350369397945-qrr40jiq3snra13jclqai1hb5qf2k39d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
