@@ -20,17 +20,9 @@ class _RegisterPage1State extends State<RegisterPage1> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(5),
-              boxShadow: [
-                BoxShadow(
-                  spreadRadius: 1,
-                  blurRadius: 5,
-                ),
-              ],
-            ),
+          Material(
+            borderRadius: BorderRadius.circular(5),
+            elevation: 10.0,
             child: Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Form(

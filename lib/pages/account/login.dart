@@ -21,17 +21,9 @@ class _LoginPageState extends State<LoginPage> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(5),
-              boxShadow: [
-                BoxShadow(
-                  spreadRadius: 1,
-                  blurRadius: 5,
-                ),
-              ],
-            ),
+          Material(
+            borderRadius: BorderRadius.circular(5),
+            elevation: 10.0,
             child: Form(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
