@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:mbunge/pages/splashscreen/page.dart';
 
 import 'accept_terms.dart';
@@ -12,11 +13,10 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   PageController pageController = PageController();
   double pageOffset = 0;
-
+  bool direction = false;
   @override
   void initState() {
     super.initState();
-    pageController = PageController();
     pageController.addListener(() {
       setState(() {
         pageOffset = pageController.page;
@@ -37,6 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
         children: <Widget>[
           buildPageView(),
           buildPageViewIndicator(),
+          //Center(child: Text("direction: ${direction ?? "hello"} "))
         ],
       ),
     );
@@ -142,75 +143,60 @@ class _SplashScreenState extends State<SplashScreen> {
       child: Stack(
         fit: StackFit.expand,
         children: <Widget>[
+          buildGradient(),
           PageView(
             physics: NeverScrollableScrollPhysics(),
             controller: pageController,
             children: <Widget>[
               SplashPage(
+                index: 0,
                 imagePath: "assets/illustrate/04.png",
-                // bgImagePath: "assets/images/4.jpg",
                 bgColor: Colors.black.withOpacity(0.9),
                 isWhite: false,
                 getPageControllerValueCallback: () {
-                  if (percentageStart == null || percentageEnd == null) {
-                    return false;
-                  } else {
-                    return percentageStart > percentageEnd ? true : false;
-                  }
+                  return direction;
                 },
+                title: "Public Participation",
                 body:
-                    "Public Participation\n\nParticipate in parliament public participation from anywhere",
+                    "Participate in parliament public participation from anywhere",
               ),
               SplashPage(
-                imagePath: "assets/illustrate/01.png",
-                // bgImagePath: "assets/images/3.jpg",
-                bgColor: Colors.red,
-                isWhite: false,
-                getPageControllerValueCallback: () {
-                  if (percentageStart == null || percentageEnd == null) {
-                    return false;
-                  } else {
-                    return percentageStart > percentageEnd ? true : false;
-                  }
-                },
-                body:
-                    "Parliament Proceedings\n\nMbunge app lets you be in check with " +
-                        "parliament proceedings.",
-              ),
-              SplashPage(
+                index: 1,
                 imagePath: "assets/illustrate/02.png",
-                // bgImagePath: "assets/images/1.jpg",
                 bgColor: Colors.white.withOpacity(0.75),
                 isWhite: true,
                 getPageControllerValueCallback: () {
-                  if (percentageStart == null || percentageEnd == null) {
-                    return false;
-                  } else {
-                    return percentageStart > percentageEnd ? true : false;
-                  }
+                  return direction;
                 },
-                body:
-                    "Meet your waheshimiwa\n\nLearn more about your Mheshimiwas every " +
-                        "week on mbunge, Register and get started.",
+                title: "Meet your waheshimiwa",
+                body: "Learn more about your Mheshimiwas every " +
+                    "week on mbunge, Register and get started.",
               ),
               SplashPage(
+                index: 2,
+                imagePath: "assets/illustrate/03.png",
+                bgColor: Colors.red,
+                isWhite: false,
+                getPageControllerValueCallback: () {
+                  return direction;
+                },
+                title: "Security",
+                body: "Your identity and user privacy is our main concern",
+              ),
+              SplashPage(
+                index: 3,
                 imagePath: "assets/illustrate/05.png",
-                // bgImagePath: "assets/images/4.jpg",
                 bgColor: Colors.green,
                 getPageControllerValueCallback: () {
-                  if (percentageStart == null || percentageEnd == null) {
-                    return false;
-                  } else {
-                    return percentageStart > percentageEnd ? true : false;
-                  }
+                  return direction;
                 },
+                title: "MbungeApp",
                 isWhite: false,
-                body: "MbungeApp\n\nThe best way to participate in the " +
+                body: "The best way to participate in the " +
                     "growth of this country. Let's get started.",
               ),
             ],
           ),
-          buildGradient(),
         ],
       ),
 
@@ -243,7 +229,7 @@ class _SplashScreenState extends State<SplashScreen> {
           // do nothing
         } else if (percentageStart > percentageEnd) {
           // print("Left to Right: ${percentageStart - percentageEnd}");
-
+          direction = true;
           //increment
           if ((percentageStart - percentageEnd) > 20) {
             if (pageController.page.toInt() < 3) {
@@ -252,7 +238,7 @@ class _SplashScreenState extends State<SplashScreen> {
           }
         } else if (percentageStart < percentageEnd) {
           // print("Right to Left: ${percentageEnd - percentageStart}");
-
+          direction = false;
           // decrement
           if ((percentageEnd - percentageStart) > 20) {
             if (pageController.page.toInt() != 0) {
@@ -282,11 +268,11 @@ class _SplashScreenState extends State<SplashScreen> {
                   : pageOffset.toInt() == 1
                       ? Colors.red.withOpacity(0.9)
                       : pageOffset.toInt() == 2
-                          ? Colors.transparent
+                          ? Colors.white.withOpacity(0.9)
                           : pageOffset.toInt() == 3
                               ? Colors.green.withOpacity(0.9)
                               : Colors.black,
-              Colors.transparent,
+              Theme.of(context).scaffoldBackgroundColor,
             ],
           ),
         ),
