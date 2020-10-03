@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mbunge/pages/_pageindex.dart';
 
@@ -7,6 +8,7 @@ class Router {
   static const String accountRoute = '/account';
   static const String verifyRoute = '/verify';
   static const String navRoute = '/home';
+  static const String particiRoute = '/parti_detail';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final args = settings.arguments;
@@ -27,7 +29,9 @@ class Router {
       case navRoute:
         return _route(MainScreen());
         break;
-
+      case particiRoute:
+        return _route(ParticipationDetail());
+        break;
       default:
         return _route(
           Scaffold(
@@ -43,7 +47,7 @@ class Router {
   }
 
   static _route(Widget page) {
-    return MaterialPageRoute(builder: (context) {
+    return CupertinoPageRoute(builder: (context) {
       return page;
     });
   }

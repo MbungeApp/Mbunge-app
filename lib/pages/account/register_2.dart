@@ -46,17 +46,9 @@ class _RegisterPage2State extends State<RegisterPage2> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(5),
-              boxShadow: [
-                BoxShadow(
-                  spreadRadius: 1,
-                  blurRadius: 5,
-                ),
-              ],
-            ),
+          Material(
+            borderRadius: BorderRadius.circular(5),
+            elevation: 10.0,
             child: Form(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -123,6 +115,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
             bottom: 0,
             right: 0,
             child: Container(
+              height: 35,
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColorDark,
                 shape: BoxShape.circle,
@@ -131,6 +124,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
                 padding: EdgeInsets.all(0),
                 icon: Icon(
                   Icons.edit,
+                  size: 18,
                   color: Colors.white,
                 ),
                 onPressed: () => showImageDialog(context),

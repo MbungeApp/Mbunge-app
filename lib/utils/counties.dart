@@ -1,5 +1,5 @@
 const List<String> counties = <String>[
-  "select your county",
+  "select your",
   "Baringo",
   "Bomet",
   "Bungoma",

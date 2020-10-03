@@ -10,7 +10,7 @@ class EventPage extends StatefulWidget {
 }
 
 class _EventPageState extends State<EventPage> {
-  bool isIos=Platform.isIOS;
+  bool isIos= true;//Platform.isIOS;
 
   ContainerTransitionType _transitionType = ContainerTransitionType.fade;
   @override
@@ -18,6 +18,8 @@ class _EventPageState extends State<EventPage> {
     return isIos
         ? CupertinoPageScaffold(
             navigationBar: CupertinoNavigationBar(
+              heroTag: "events-tag",
+              transitionBetweenRoutes: false,
               middle: Text("Events & News"),
             ),
             child: ListView.builder(
@@ -39,66 +41,5 @@ class _EventPageState extends State<EventPage> {
               },
             ),
           );
-  }
-}
-
-class _DetailsPage extends StatelessWidget {
-  const _DetailsPage({this.includeMarkAsDoneButton = true});
-
-  final bool includeMarkAsDoneButton;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Details page'),
-        actions: <Widget>[
-          if (includeMarkAsDoneButton)
-            IconButton(
-              icon: const Icon(Icons.done),
-              onPressed: () => Navigator.pop(context, true),
-              tooltip: 'Mark as done',
-            )
-        ],
-      ),
-      body: ListView(
-        children: <Widget>[
-          Container(
-            color: Colors.black38,
-            height: 250,
-            child: Padding(
-              padding: const EdgeInsets.all(70.0),
-              child: Image.asset(
-                'assets/images/3.jpg',
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  'Title',
-                  style: Theme.of(context).textTheme.headline5.copyWith(
-                        color: Colors.black54,
-                        fontSize: 30.0,
-                      ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "_loremIpsumParagraph",
-                  style: Theme.of(context).textTheme.bodyText2.copyWith(
-                        color: Colors.black54,
-                        height: 1.5,
-                        fontSize: 16.0,
-                      ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

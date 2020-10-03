@@ -10,25 +10,33 @@ class ConfirmCode extends StatefulWidget {
   _ConfirmCodeState createState() => _ConfirmCodeState();
 }
 
-class _ConfirmCodeState extends State<ConfirmCode> {
+class _ConfirmCodeState extends State<ConfirmCode>
+    with SingleTickerProviderStateMixin {
+  AnimationController animationController;
+  Animation<Offset> firstInput;
+  Animation<Offset> secondInput;
+  Animation<Offset> thirdInput;
+  Animation<Offset> fourthInput;
   Timer _timer;
-  int _start = 60;
+  int _start = 30;
 
   void startTimer() {
-    const oneSec = const Duration(seconds: 1);
-    if (_timer != null) {
+    if (mounted) {
       _timer = Timer.periodic(
-        oneSec,
+        Duration(seconds: 1),
         (Timer timer) => setState(
           () {
             if (_start < 1) {
               timer.cancel();
+              _start = 30;
             } else {
               _start = _start - 1;
             }
           },
         ),
       );
+    } else {
+      print("Timer is nil");
     }
   }
 
@@ -44,6 +52,18 @@ class _ConfirmCodeState extends State<ConfirmCode> {
   @override
   void initState() {
     super.initState();
+    animationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 5),
+    )
+      ..addListener(() {
+        setState(() {});
+      })
+      ..forward();
+    firstInput = Tween<Offset>(begin: Offset(0, 50), end: Offset.zero)
+        .chain(
+            CurveTween(curve: Interval(0.0, 1.0, curve: Curves.easeInOutBack)))
+        .animate(animationController);
 
     first.addListener(() {
       setState(() {});
@@ -116,23 +136,28 @@ class _ConfirmCodeState extends State<ConfirmCode> {
         children: <Widget>[
           Material(
             borderRadius: BorderRadius.circular(5),
-            elevation: 7.0,
+            elevation: 10.0,
             child: Form(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   buildTitle(context),
                   buildSubtitle(context),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: Text(
-                      "Please wait for $_start seconds",
-                      style: Theme.of(context)
-                          .textTheme
-                          .caption
-                          .copyWith(color: Colors.red),
-                    ),
-                  ),
+                  _start < 30 && _start != 0
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 5.0,
+                            vertical: 8.0,
+                          ),
+                          child: Text(
+                            "Please wait for $_start seconds",
+                            style: Theme.of(context)
+                                .textTheme
+                                .caption
+                                .copyWith(color: Colors.red),
+                          ),
+                        )
+                      : Container(),
                   Padding(
                     padding: const EdgeInsets.all(20),
                     child: Row(
@@ -200,9 +225,11 @@ class _ConfirmCodeState extends State<ConfirmCode> {
     return Padding(
       padding: const EdgeInsets.only(top: 20.0),
       child: FlatButton(
-        onPressed: () {
-          startTimer();
-        },
+        onPressed: _start < 30 && _start != 0
+            ? null
+            : () {
+                startTimer();
+              },
         child: Text("Didn't get code, resend code"),
       ),
     );
