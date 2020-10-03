@@ -15,12 +15,12 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int currentIndex = 0;
-  bool isIos = Platform.isIOS;
+  bool isIos = true;// Platform.isIOS;
 
   List<Widget> pageList = <Widget>[
     HomePage(),
     EventPage(),
-    MPPage(),
+    MpPage(),
     ProfilePage(),
   ];
 
@@ -61,7 +61,7 @@ class _MainScreenState extends State<MainScreen> {
                   return EventPage();
                   break;
                 case 2:
-                  return MPPage();
+                  return MpPage();
                   break;
                 case 3:
                   return ProfilePage();
