@@ -12,7 +12,7 @@ class _ProfilePageState extends State<ProfilePage>
     with
         SingleTickerProviderStateMixin,
         AutomaticKeepAliveClientMixin<ProfilePage> {
-  bool isIos = Platform.isIOS;
+  bool isIos = true;//Platform.isIOS;
   AnimationController _controller;
 
   Animation<Offset> profileOffset;
@@ -383,9 +383,6 @@ class _ProfilePageState extends State<ProfilePage>
                       onTap: () {
                         // Share.share("https://github.com/Iampato");
                       },
-                    ),
-                    ListTile(
-                      title: Text("Terms of Service"),
                     ),
                     ListTile(
                       title: Text("Privacy and Security Policy"),
