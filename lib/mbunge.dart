@@ -31,7 +31,7 @@ class _MyAppState extends State<MyApp> {
               // brightness: Brightness.dark,
               primaryColor: MbungeColors.color,
             ),
-            onGenerateRoute: Router.generateRoute,
+            onGenerateRoute: AppRouter.generateRoute,
             localizationsDelegates: [
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
@@ -49,7 +49,7 @@ class _MyAppState extends State<MyApp> {
               primarySwatch: MbungeColors.color,
               visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
-            onGenerateRoute: Router.generateRoute,
+            onGenerateRoute: AppRouter.generateRoute,
             localizationsDelegates: [
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,

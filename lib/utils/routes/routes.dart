@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mbunge/pages/_pageindex.dart';
 
-class Router {
+class AppRouter {
   static const String splashRoute = '/';
   static const String themeRoute = '/theme';
   static const String accountRoute = '/account';

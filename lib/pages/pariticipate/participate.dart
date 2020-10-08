@@ -16,7 +16,7 @@ class _ParticipatePageState extends State<ParticipatePage> {
         children: [
           ParticipationItem(
             onTap: () {
-              Navigator.pushNamed(context, Router.particiRoute);
+              Navigator.pushNamed(context, AppRouter.particiRoute);
             },
           )
         ],
