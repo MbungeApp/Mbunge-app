@@ -7,8 +7,7 @@ part 'verify_event.dart';
 part 'verify_state.dart';
 
 class VerifyBloc extends Bloc<VerifyEvent, VerifyState> {
-  @override
-  VerifyState get initialState => VerifyInitial();
+  VerifyBloc() : super(VerifyInitial());
 
   @override
   Stream<VerifyState> mapEventToState(
