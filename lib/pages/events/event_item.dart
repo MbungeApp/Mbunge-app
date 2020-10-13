@@ -17,7 +17,7 @@ class EventItem extends StatelessWidget {
         Navigator.push(
           context,
           CupertinoPageRoute(
-            builder: (context){
+            builder: (context) {
               return EventDetail();
             },
           ),

@@ -12,7 +12,7 @@ class _ProfilePageState extends State<ProfilePage>
     with
         SingleTickerProviderStateMixin,
         AutomaticKeepAliveClientMixin<ProfilePage> {
-  bool isIos = true;//Platform.isIOS;
+  bool isIos = true; //Platform.isIOS;
   AnimationController _controller;
 
   Animation<Offset> profileOffset;

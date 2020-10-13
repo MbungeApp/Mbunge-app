@@ -2,6 +2,14 @@ import 'package:http/http.dart' as http;
 import 'package:mbunge/repository/share_preferences.dart';
 
 class HttpClient {
+  static final HttpClient _httpClient = HttpClient._internal();
+
+  factory HttpClient() {
+    return _httpClient;
+  }
+
+  HttpClient._internal();
+
   static SharePreferenceRepo sharePreferenceRepo = SharePreferenceRepo();
   static String baseUrl = "http://mbungeapp.tech:5000/api/v1";
 
@@ -15,7 +23,7 @@ class HttpClient {
         'Authorization': 'Bearer $token',
       };
 
-  static Future<http.Response> getRequest({
+  Future<http.Response> getRequest({
     String url,
   }) async {
     final reqUrl = '$baseUrl/$url';
@@ -23,13 +31,13 @@ class HttpClient {
     return await http.get(reqUrl, headers: headers(token));
   }
 
-  static Future<http.Response> postRequest({String url, dynamic body}) async {
+  Future<http.Response> postRequest({String url, dynamic body}) async {
     final reqUrl = '$baseUrl/$url';
     String token = await sharePreferenceRepo.getToken();
     return await http.post(reqUrl, headers: headers(token), body: body);
   }
 
-  static Future<http.Response> deleteRequest({
+  Future<http.Response> deleteRequest({
     String url,
   }) async {
     final reqUrl = '$baseUrl/$url';

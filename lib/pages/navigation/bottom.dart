@@ -15,7 +15,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int currentIndex = 0;
-  bool isIos = true;// Platform.isIOS;
+  bool isIos = true; // Platform.isIOS;
 
   List<Widget> pageList = <Widget>[
     HomePage(),

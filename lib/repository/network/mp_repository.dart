@@ -1,3 +1,3 @@
-abstract class MpInterface{}
+abstract class MpInterface {}
 
-class MpRepository implements MpInterface{}
+class MpRepository implements MpInterface {}

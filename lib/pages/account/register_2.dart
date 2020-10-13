@@ -7,7 +7,7 @@ import 'package:mbunge/utils/counties.dart';
 class RegisterPage2 extends StatefulWidget {
   final PageController controller;
   RegisterPage2({@required this.controller});
-  
+
   @override
   _RegisterPage2State createState() => _RegisterPage2State();
 }

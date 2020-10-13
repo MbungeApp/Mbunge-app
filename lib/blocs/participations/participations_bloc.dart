@@ -6,7 +6,8 @@ import 'package:equatable/equatable.dart';
 part 'participations_event.dart';
 part 'participations_state.dart';
 
-class ParticipationsBloc extends Bloc<ParticipationsEvent, ParticipationsState> {
+class ParticipationsBloc
+    extends Bloc<ParticipationsEvent, ParticipationsState> {
   ParticipationsBloc() : super(ParticipationsInitial());
 
   @override

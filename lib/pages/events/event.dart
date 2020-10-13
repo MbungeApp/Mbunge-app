@@ -10,7 +10,7 @@ class EventPage extends StatefulWidget {
 }
 
 class _EventPageState extends State<EventPage> {
-  bool isIos= true;//Platform.isIOS;
+  bool isIos = true; //Platform.isIOS;
 
   ContainerTransitionType _transitionType = ContainerTransitionType.fade;
   @override

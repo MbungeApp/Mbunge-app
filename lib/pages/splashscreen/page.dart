@@ -106,13 +106,9 @@ class _SplashPageState extends State<SplashPage>
               opacity: 0.6,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Text(
-                  widget.body,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle1
-                ),
+                child: Text(widget.body,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.subtitle1),
               ),
             ),
           ],

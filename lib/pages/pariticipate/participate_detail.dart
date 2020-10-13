@@ -57,14 +57,12 @@ class _CommentsPageState extends State<CommentsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0.0,
-        backgroundColor: Colors.transparent,
-        iconTheme: IconThemeData(color:Colors.black)
-      ),
+          elevation: 0.0,
+          backgroundColor: Colors.transparent,
+          iconTheme: IconThemeData(color: Colors.black)),
       body: Column(
         children: [
           TextFormField(),
-
         ],
       ),
     );

@@ -12,7 +12,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   TabController _tabController;
   int currentIndex = 0;
-  bool isIos= true;//Platform.isIOS;
+  bool isIos = true; //Platform.isIOS;
 
   final Map<int, Widget> pages = const <int, Widget>{
     0: Text(
