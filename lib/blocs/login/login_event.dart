@@ -7,14 +7,14 @@ abstract class LoginEvent extends Equatable {
 }
 
 class SignInWithPhone extends LoginEvent {
-  final String phone;
-  final String password;
+  final LoginRequest loginRequest;
 
-  SignInWithPhone(this.phone, this.password);
-
-  @override
-  List<Object> get props => [phone, password];
+  SignInWithPhone(this.loginRequest);
 
   @override
-  String toString() => "SignInWithPhone event phone:$phone password:$password";
+  List<Object> get props => [loginRequest];
+
+  @override
+  String toString() =>
+      "SignInWithPhone event phone:${loginRequest.phone} password:${loginRequest.password}";
 }
