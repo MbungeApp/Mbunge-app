@@ -1,32 +1,59 @@
+import 'dart:convert';
+
+import 'package:mbunge/models/http/_http.dart';
+import 'package:mbunge/utils/network/http.dart';
+
 abstract class UserInterface {
-  userLogin();
-  userRegistration();
+  Future<LoginResponse> userLogin(LoginRequest loginRequest);
+  Future<RegisterResponse> userRegistration(RegisterRequest registerRequest);
   userVerification();
   userForgetPassword();
 }
 
 class UserRepository implements UserInterface {
+  static final UserRepository _userRepository = UserRepository._internal();
+  factory UserRepository() {
+    return _userRepository;
+  }
+  UserRepository._internal();
+
+  final HttpClient httpClient = HttpClient();
+
   @override
-  userForgetPassword() {
-    // TODO: implement userForgetPassword
-    throw UnimplementedError();
+  Future<LoginResponse> userLogin(LoginRequest loginRequest) async {
+    final response = await httpClient.postRequest(
+      url: "/auth/sign_in",
+      body: loginRequest.toJson(),
+    );
+    if (response.statusCode != 200) {
+      throw Exception('error logging in');
+    }
+    return LoginResponse.fromJson(jsonDecode(response.body));
   }
 
   @override
-  userLogin() {
-    // TODO: implement userLogin
-    throw UnimplementedError();
-  }
-
-  @override
-  userRegistration() {
-    // TODO: implement userRegistration
-    throw UnimplementedError();
+  Future<RegisterResponse> userRegistration(
+    RegisterRequest registerRequest,
+  ) async {
+    final response = await httpClient.postRequest(
+      url: "/auth/sign_up",
+      body: registerRequest.toJson(),
+    );
+    if (response.statusCode != 201) {
+      throw Exception('error logging in');
+    }
+    return RegisterResponse.fromJson(jsonDecode(response.body));
   }
 
   @override
   userVerification() {
     // TODO: implement userVerification
+    throw UnimplementedError();
+  }
+
+  @override
+  userForgetPassword() {
+    // TODO: implement userForgetPassword
     throw UnimplementedError();
   }
 }
