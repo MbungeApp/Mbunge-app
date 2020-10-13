@@ -18,8 +18,7 @@ dependencies:
   #state-management
   shared_preferences: 
   equatable:
-  flutter_bloc: ^4.0.0
-  hydrated_bloc: ^4.0.0
+  flutter_bloc: ^6.0.0
 
   # Notifications
   firebase_messaging: 6.0.9
