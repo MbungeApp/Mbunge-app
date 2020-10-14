@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:mbunge/repository/share_preferences.dart';
 
@@ -17,6 +19,10 @@ class HttpClient {
     'Content-type': 'application/json',
     'Accept': 'application/json'
   };
+  static var header2 = {
+    'Content-type': 'application/json',
+    'Accept': 'application/json'
+  };
   static Map headers(String token) => {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -31,16 +37,17 @@ class HttpClient {
     return await http.get(reqUrl, headers: headers(token));
   }
 
-  Future<http.Response> postRequest({String url, dynamic body}) async {
-    final reqUrl = '$baseUrl/$url';
+  Future<http.Response> postRequest(
+      {String url, Map<String, dynamic> body}) async {
+    final reqUrl = '$baseUrl$url';
     String token = await sharePreferenceRepo.getToken();
-    return await http.post(reqUrl, headers: headers(token), body: body);
+    return await http.post(reqUrl, headers: header2, body: jsonEncode(body));
   }
 
   Future<http.Response> deleteRequest({
     String url,
   }) async {
-    final reqUrl = '$baseUrl/$url';
+    final reqUrl = '$baseUrl$url';
     String token = await sharePreferenceRepo.getToken();
     return await http.delete(reqUrl, headers: headers(token));
   }
