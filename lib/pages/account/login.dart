@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mbunge/blocs/login/login_bloc.dart';
+import 'package:mbunge/models/http/_http.dart';
+import 'package:mbunge/repository/network/user_repository.dart';
+import 'package:mbunge/repository/share_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   final PageController controller;
@@ -8,40 +13,84 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  LoginRequest loginRequest = LoginRequest();
+  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool passwordVisible = true;
+  LoginBloc loginBloc;
+
+  @override
+  void dispose() {
+    loginBloc.close();
+    super.dispose();
+  }
+
+  void showInSnackBar(String value, Color bgColor) {
+    _scaffoldKey.currentState.showSnackBar(
+      SnackBar(
+        backgroundColor: bgColor,
+        content: Text(value),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        15,
-        MediaQuery.of(context).size.height * 0.1,
-        15,
-        0,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Material(
-            borderRadius: BorderRadius.circular(5),
-            elevation: 10.0,
-            child: Form(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  buildEmailInput(),
-                  buildPasswordInput(),
-                  buildForgetPassword(),
-                  buildLoginButton(),
-                ],
-              ),
+    return BlocProvider(
+      create: (context) {
+        loginBloc = LoginBloc(UserRepository(), SharePreferenceRepo());
+        return loginBloc;
+      },
+      child: BlocListener<LoginBloc, LoginState>(
+        listener: (context, state) {
+          if (state is LoginInitial) {
+            showInSnackBar("Loading", Colors.grey);
+          }
+          if (state is LoginSuccess) {
+            showInSnackBar("Success, Hello ${state.username}", Colors.green);
+          }
+          if (state is LoginError) {
+            showInSnackBar("Error", Colors.orange);
+          }
+        },
+        child: Scaffold(
+          key: _scaffoldKey,
+          backgroundColor: Colors.transparent,
+          body: Padding(
+            padding: EdgeInsets.fromLTRB(
+              15,
+              MediaQuery.of(context).size.height * 0.1,
+              15,
+              0,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Material(
+                  borderRadius: BorderRadius.circular(5),
+                  elevation: 10.0,
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        buildEmailInput(),
+                        buildPasswordInput(),
+                        buildForgetPassword(),
+                        buildLoginButton(),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(child: Container()),
+                FlatButton(
+                  onPressed: () => widget.controller.jumpToPage(1),
+                  child: Text("Don't have an account, Register here"),
+                )
+              ],
             ),
           ),
-          Expanded(child: Container()),
-          FlatButton(
-            onPressed: () => widget.controller.jumpToPage(1),
-            child: Text("Don't have an account, Register here"),
-          )
-        ],
+        ),
       ),
     );
   }
@@ -55,13 +104,21 @@ class _LoginPageState extends State<LoginPage> {
         bottom: 10,
       ),
       child: TextFormField(
-        keyboardType: TextInputType.emailAddress,
-        autovalidate: true,
+        keyboardType: TextInputType.number,
         autocorrect: false,
         decoration: InputDecoration(
-          labelText: "Email address",
-          prefixIcon: Icon(Icons.email),
+          labelText: "Phone number",
+          prefixIcon: Icon(Icons.phone),
         ),
+        onSaved: (value) {
+          loginRequest.phone = value;
+        },
+        validator: (value) {
+          if (value.isEmpty) {
+            return 'Please enter your phone number';
+          }
+          return null;
+        },
       ),
     );
   }
@@ -71,8 +128,10 @@ class _LoginPageState extends State<LoginPage> {
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
       child: TextFormField(
         obscureText: passwordVisible,
-        autovalidate: true,
         autocorrect: false,
+        onSaved: (value) {
+          loginRequest.password = value;
+        },
         decoration: InputDecoration(
           labelText: "Password",
           prefixIcon: Icon(Icons.security),
@@ -116,7 +175,13 @@ class _LoginPageState extends State<LoginPage> {
         splashColor: Colors.black,
         constraints: BoxConstraints(minHeight: 40, minWidth: 200),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-        onPressed: () => Navigator.pushNamed(context, "/home"),
+        onPressed: () {
+          // Navigator.pushNamed(context, "/home");
+          if (_formKey.currentState.validate()) {
+            _formKey.currentState.save();
+            loginBloc.add(SignInWithPhone(loginRequest));
+          }
+        },
       ),
     );
   }
