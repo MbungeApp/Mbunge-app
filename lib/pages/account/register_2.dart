@@ -161,27 +161,42 @@ class _RegisterPage2State extends State<RegisterPage2> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
       child: SizedBox(
-        width: double.infinity,
-        child: DropdownButton<String>(
-          isExpanded: true,
-          // iconEnabledColor: Col,
-          hint: Text("County"),
-          value: countyValue,
-          onChanged: (String value) {
-            setState(() {
-              countyValue = value;
-            });
-          },
-          items: counties.map((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(
-                value,
-              ),
-            );
-          }).toList(),
-        ),
-      ),
+          width: double.infinity,
+          child: DropdownButtonFormField(
+            items: counties.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(
+                  value,
+                ),
+              );
+            }).toList(),
+              onChanged: (String value) {
+                setState(() {
+                  countyValue = value;
+                });
+              },
+          )
+          // child: DropdownButton<String>(
+          //   isExpanded: true,
+          //   // iconEnabledColor: Col,
+          //   hint: Text("County"),
+          //   value: countyValue,
+          //   onChanged: (String value) {
+          //     setState(() {
+          //       countyValue = value;
+          //     });
+          //   },
+          //   items: counties.map((String value) {
+          //     return DropdownMenuItem<String>(
+          //       value: value,
+          //       child: Text(
+          //         value,
+          //       ),
+          //     );
+          //   }).toList(),
+          // ),
+          ),
     );
   }
 
