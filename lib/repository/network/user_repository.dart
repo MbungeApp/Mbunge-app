@@ -25,10 +25,14 @@ class UserRepository implements UserInterface {
       url: "/auth/sign_in",
       body: loginRequest.toJson(),
     );
+    print("REEEEE: ${response.statusCode}");
+    print("REEEEE: ${response.body}");
+    
     if (response.statusCode != 200) {
       throw Exception('error logging in');
     }
-    return LoginResponse.fromJson(jsonDecode(response.body));
+    final responseJson = jsonDecode(response.body);
+    return LoginResponse.fromJson(responseJson);
   }
 
   @override
