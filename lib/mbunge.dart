@@ -29,7 +29,7 @@ class _MyAppState extends State<MyApp> {
             title: 'Mbunge App',
             theme: CupertinoThemeData(
               // brightness: Brightness.dark,
-              primaryColor: MbungeColors.color,
+              primaryColor: Colors.red,
             ),
             onGenerateRoute: AppRouter.generateRoute,
             localizationsDelegates: [
@@ -46,7 +46,7 @@ class _MyAppState extends State<MyApp> {
             title: 'Mbunge App',
             theme: ThemeData(
               // brightness: Brightness.dark,
-              primarySwatch: MbungeColors.color,
+              primarySwatch: Colors.red,
               visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
             onGenerateRoute: AppRouter.generateRoute,
