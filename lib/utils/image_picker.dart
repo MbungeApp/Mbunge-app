@@ -2,14 +2,16 @@ import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 
-abstract class ImagePickerService {
-  Future<File> pickImage(ImageSource source);
-  Future<File> pickVideo(ImageSource source);
-  // video
-  // audio
-}
+class ImagePickerService {
+  static final ImagePickerService _imagePickerService =
+      ImagePickerService._internal();
 
-class ImagePickerServiceInstance extends ImagePickerService {
+  factory ImagePickerService() {
+    return _imagePickerService;
+  }
+
+  ImagePickerService._internal();
+
   pickImage(ImageSource source) async {
     File image = await ImagePicker.pickImage(
       source: source,
