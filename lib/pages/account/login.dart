@@ -164,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: FlatButton(
-        onPressed: () => Navigator.pushNamed(context, "/verify"),
+        onPressed: () => Navigator.popAndPushNamed(context, "/verify"),
         child: Text("forgot password ? Recover here"),
       ),
     );
@@ -177,9 +177,10 @@ class _LoginPageState extends State<LoginPage> {
         child: Text(
           "LOGIN",
           style: TextStyle(
-              letterSpacing: 0.6,
-              color: Colors.white,
-              fontWeight: FontWeight.bold),
+            letterSpacing: 0.6,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         fillColor: Colors.grey,
         splashColor: Colors.black,
