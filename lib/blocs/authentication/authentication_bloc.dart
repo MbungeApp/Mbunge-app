@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -30,7 +29,7 @@ class AuthenticationBloc
 
   Stream<AuthenticationState> _mapAppStartedToState() async* {
     yield AuthenticationInitial();
-    String token = await sharePreferenceRepo.getToken();;
+    String token = await sharePreferenceRepo.getToken();
 
     print("#######: $token");
     if (token == null || token.isEmpty) {

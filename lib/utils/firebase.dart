@@ -5,6 +5,15 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 var flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
 
 class PushNotification {
+  static final PushNotification _pushNotification =
+      PushNotification._internal();
+
+  factory PushNotification() {
+    return _pushNotification;
+  }
+
+  PushNotification._internal();
+
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   void initialize() {

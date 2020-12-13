@@ -2,6 +2,14 @@
 import 'package:flutter/material.dart';
 
 class MbungeColors {
+  static final MbungeColors _mbungeColors = MbungeColors._internal();
+
+  factory MbungeColors() {
+    return _mbungeColors;
+  }
+
+  MbungeColors._internal();
+  
   static Map<int, Color> colorCodes = {
     50: Color.fromRGBO(180, 4, 4, .1),
     100: Color.fromRGBO(180, 4, 4, .2),
