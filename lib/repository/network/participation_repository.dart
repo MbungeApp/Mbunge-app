@@ -1,13 +1,21 @@
 import 'dart:convert';
 
 import 'package:mbunge/models/http/_http.dart';
+import 'package:mbunge/utils/network/endpoints.dart';
 import 'package:mbunge/utils/network/http.dart';
 
+import '../share_preferences.dart';
+
 abstract class ParticipationInterface {
-  Future<List<Participation>> getParticipations();
+  Future<List<Participation>> getParticipations({bool isOffline = false});
 }
 
 class ParticipationRepository implements ParticipationInterface {
+  final HttpClient httpClient = HttpClient();
+  final Endpoints endpoints = Endpoints();
+
+  SharePreferenceRepo sharePreferenceRepo = SharePreferenceRepo();
+
   static final ParticipationRepository _userRepository =
       ParticipationRepository._internal();
   factory ParticipationRepository() {
@@ -15,20 +23,31 @@ class ParticipationRepository implements ParticipationInterface {
   }
   ParticipationRepository._internal();
 
-  final HttpClient httpClient = HttpClient();
   @override
-  Future<List<Participation>> getParticipations() async {
-    final response = await httpClient.getRequest(url: "/participation/");
-    print("REEEEE: ${response.statusCode}");
-    print("REEEEE: ${response.body}");
-    if (response.statusCode != 200) {
-      throw Exception('error logging in');
+  Future<List<Participation>> getParticipations(
+      {bool isOffline = false}) async {
+    if (isOffline) {
+      final response = await sharePreferenceRepo.getParticipationCache();
+      final responseJson = jsonDecode(response);
+      return List<Participation>.from(
+        responseJson.map(
+          (x) => Participation.fromJson(x),
+        ),
+      );
+    } else {
+      final response = await httpClient.getRequest(
+        url: endpoints.allParticipationsEndpoint,
+      );
+      if (response.statusCode != 200) {
+        throw Exception(response.body);
+      }
+      await sharePreferenceRepo.setParticipationCache(response.body);
+      final responseJson = jsonDecode(response.body);
+      return List<Participation>.from(
+        responseJson.map(
+          (x) => Participation.fromJson(x),
+        ),
+      );
     }
-    print("232323");
-    final responseJson = jsonDecode(response.body);
-    print("1111111");
-    return List<Participation>.from(
-      responseJson.map((x) => Participation.fromJson(x)),
-    ); // participationFromJson(responseJson);
   }
 }

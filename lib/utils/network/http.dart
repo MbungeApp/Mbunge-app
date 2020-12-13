@@ -13,16 +13,13 @@ class HttpClient {
   HttpClient._internal();
 
   static SharePreferenceRepo sharePreferenceRepo = SharePreferenceRepo();
-  static String baseUrl = "http://mbungeapp.tech:5000/api/v1";
+  static String baseUrl = "https://api.mbungeapp.tech/api/v1";
 
   static var header1 = {
     'Content-type': 'application/json',
     'Accept': 'application/json'
   };
-  static var header2 = {
-    'Content-type': 'application/json',
-    'Accept': 'application/json'
-  };
+
   static Map headers(String token) => {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -34,13 +31,8 @@ class HttpClient {
   }) async {
     final reqUrl = '$baseUrl$url';
     String token = await sharePreferenceRepo.getToken();
-    var header2 = {
-      'Content-type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $token',
-    };
 
-    return await http.get(reqUrl, headers: header2);
+    return await http.get(reqUrl, headers: headers(token));
   }
 
   Future<http.Response> postRequest(
@@ -48,7 +40,11 @@ class HttpClient {
     final reqUrl = '$baseUrl$url';
     String token = await sharePreferenceRepo.getToken();
     print(jsonEncode(body));
-    return await http.post(reqUrl, headers: header2, body: jsonEncode(body));
+    return await http.post(
+      reqUrl,
+      headers: headers(token),
+      body: jsonEncode(body),
+    );
   }
 
   Future<http.Response> deleteRequest({

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:mbunge/models/http/_http.dart';
+import 'package:mbunge/utils/network/endpoints.dart';
 import 'package:mbunge/utils/network/http.dart';
 
 abstract class UserInterface {
@@ -11,25 +12,23 @@ abstract class UserInterface {
 }
 
 class UserRepository implements UserInterface {
+  final HttpClient httpClient = HttpClient();
+  final Endpoints endpoints = Endpoints();
+
   static final UserRepository _userRepository = UserRepository._internal();
   factory UserRepository() {
     return _userRepository;
   }
   UserRepository._internal();
 
-  final HttpClient httpClient = HttpClient();
-
   @override
   Future<LoginResponse> userLogin(LoginRequest loginRequest) async {
     final response = await httpClient.postRequest(
-      url: "/auth/sign_in",
+      url: endpoints.signInEndpoint,
       body: loginRequest.toJson(),
     );
-    print("REEEEE: ${response.statusCode}");
-    print("REEEEE: ${response.body}");
-    
     if (response.statusCode != 200) {
-      throw Exception('error logging in');
+      throw Exception(response.body);
     }
     final responseJson = jsonDecode(response.body);
     return LoginResponse.fromJson(responseJson);
@@ -40,11 +39,11 @@ class UserRepository implements UserInterface {
     RegisterRequest registerRequest,
   ) async {
     final response = await httpClient.postRequest(
-      url: "/auth/sign_up",
+      url: endpoints.signUpEndpoint,
       body: registerRequest.toJson(),
     );
     if (response.statusCode != 201) {
-      throw Exception('error logging in');
+      throw Exception(response.body);
     }
     return RegisterResponse.fromJson(jsonDecode(response.body));
   }
