@@ -272,7 +272,6 @@ class _ConfirmCodeState extends State<ConfirmCode>
             controller: fourth,
             textAlign: TextAlign.center,
             keyboardType: TextInputType.number,
-            autovalidate: true,
             maxLines: 1,
             decoration: InputDecoration(
               enabledBorder: OutlineInputBorder(
@@ -309,7 +308,6 @@ class _ConfirmCodeState extends State<ConfirmCode>
             focusNode: thirdNode,
             textAlign: TextAlign.center,
             keyboardType: TextInputType.number,
-            autovalidate: true,
             maxLines: 1,
             decoration: InputDecoration(
               enabledBorder: OutlineInputBorder(
@@ -346,7 +344,6 @@ class _ConfirmCodeState extends State<ConfirmCode>
             focusNode: secondNode,
             textAlign: TextAlign.center,
             keyboardType: TextInputType.number,
-            autovalidate: true,
             maxLines: 1,
             decoration: InputDecoration(
               enabledBorder: OutlineInputBorder(
@@ -383,7 +380,6 @@ class _ConfirmCodeState extends State<ConfirmCode>
             focusNode: firstNode,
             textAlign: TextAlign.center,
             keyboardType: TextInputType.number,
-            autovalidate: true,
             decoration: InputDecoration(
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(

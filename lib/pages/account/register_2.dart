@@ -142,9 +142,6 @@ class _RegisterPage2State extends State<RegisterPage2> {
       child: TextField(
         controller: dateController,
         keyboardType: TextInputType.datetime,
-        onChanged: (value) {
-          //TODO
-        },
         onTap: () => getDate(),
         decoration: InputDecoration(
           hintText: "Date of Birth",

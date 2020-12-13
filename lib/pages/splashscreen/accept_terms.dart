@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:io' show Platform;
 
 void showAlertDialog(BuildContext context) {
   final bool isIos = true; //Platform.isIOS;

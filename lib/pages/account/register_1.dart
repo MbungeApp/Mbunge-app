@@ -231,9 +231,6 @@ class _RegisterPage1State extends State<RegisterPage1> {
       child: TextFormField(
         controller: dateController,
         keyboardType: TextInputType.datetime,
-        onChanged: (value) {
-          //TODO
-        },
         // onSaved: (value) {
         // user.dateBirth = DateTime.parse(value);
         // },
