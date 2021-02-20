@@ -33,8 +33,8 @@ class _EventPageState extends State<EventPage> {
           BlocProvider(
             create: (context) => EventCubit(EventRepository())..getEvents(),
             child: RefreshIndicator(
-              onRefresh: () {
-                BlocProvider.of<EventCubit>(context).getEvents();
+              onRefresh: () async {
+                await BlocProvider.of<EventCubit>(context).getEvents();
                 return _refreshCompleter.future;
               },
               child: BlocBuilder<EventCubit, EventState>(

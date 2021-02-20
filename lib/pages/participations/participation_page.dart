@@ -35,12 +35,12 @@ class _ParticipationPageState extends State<ParticipationPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Scaffold(
-      body: BlocProvider(
-        create: (context) => webinarCubit,
-        child: RefreshIndicator(
-          onRefresh: () {
-            webinarCubit.fetchWebinars();
+    return BlocProvider(
+      create: (context) => webinarCubit,
+      child: Scaffold(
+        body: RefreshIndicator(
+          onRefresh: () async {
+            await webinarCubit.fetchWebinars();
             return _refreshCompleter.future;
           },
           child: Stack(

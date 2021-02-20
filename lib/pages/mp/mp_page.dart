@@ -34,8 +34,8 @@ class _MPPageState extends State<MPPage> {
           BlocProvider(
             create: (context) => MpsCubit(MpRepository())..getMps(),
             child: RefreshIndicator(
-              onRefresh: () {
-                BlocProvider.of<MpsCubit>(context).getMps();
+              onRefresh: () async {
+                await BlocProvider.of<MpsCubit>(context).getMps();
                 return _refreshCompleter.future;
               },
               child: BlocBuilder<MpsCubit, MpsState>(
