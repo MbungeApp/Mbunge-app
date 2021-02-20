@@ -39,3 +39,10 @@ app.*.symbols
 
 # Obfuscation related
 app.*.map.json
+<<<<<<< HEAD
+=======
+
+# Exceptions to above rules.
+!/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+.vscode/launch.json
+>>>>>>> 7ac0d7cdff5d9dfae37e80bfd4ebf85066594d79
