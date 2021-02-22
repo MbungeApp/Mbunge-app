@@ -2,11 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mbunge/cubit/responses/addresponse_bloc.dart';
+import 'package:mbunge/cubit/responses/getresponses_bloc.dart';
 import 'package:mbunge/repository/webinar_repository.dart';
+
 class AddReponse extends StatefulWidget {
   final String particiId;
+  final GetresponsesBloc getresponsesBloc;
 
-  const AddReponse({Key key, this.particiId}) : super(key: key);
+  const AddReponse({Key key, this.particiId,@required this.getresponsesBloc})
+      : super(key: key);
   @override
   _AddReponse createState() => _AddReponse();
 }
@@ -73,6 +77,7 @@ class _AddReponse extends State<AddReponse> {
                 Colors.greenAccent,
               );
               _formKey.currentState.reset();
+              
               Future.delayed(Duration(seconds: 1), () {
                 Navigator.pop(context, state.responses);
               });
@@ -97,7 +102,8 @@ class _AddReponse extends State<AddReponse> {
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Opacity(
                       opacity: 0.7,
-                      child: Text("Submit a question to the guest on the agenda"),
+                      child:
+                          Text("Submit a question to the guest on the agenda"),
                     ),
                   ),
                   SizedBox(height: 10),

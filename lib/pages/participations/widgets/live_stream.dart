@@ -97,7 +97,7 @@ class _LiveStreamPageState extends State<LiveStreamPage> {
             children: [
               Center(
                 child: message.value == ""
-                    ? remoteUid.isNotEmpty != null
+                    ? remoteUid.length != 0
                         ? RtcRemoteView.SurfaceView(
                             uid: remoteUid[0],
                             channelId: channelid,
