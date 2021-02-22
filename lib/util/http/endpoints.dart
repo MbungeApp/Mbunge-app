@@ -32,4 +32,5 @@ class Endpoints {
   // Users
   String signInEndpoint = "/auth/sign_in";
   String signUpEndpoint = "/auth/sign_up";
+  String updateProfileEndpoint(String userId) => "/auth/update/$userId";
 }

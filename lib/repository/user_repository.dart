@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:mbunge/models/edit_user_model.dart';
 import 'package:mbunge/models/login_request.dart';
 import 'package:mbunge/models/login_response.dart';
 import 'package:mbunge/models/register_request.dart';
@@ -28,7 +29,11 @@ class UserRepository {
     }
     debugPrint("response: ${response.statusCode}");
     final loginResponse = loginResponseFromJson(response.body);
-    return loginResponse; // LoginResponse.fromJson(responseJson);
+    print(loginResponse.user.toJson().toString());
+    if (loginResponse.token.trim() == "") {
+      return null;
+    }
+    return loginResponse;
   }
 
   Future<RegisterResponse> userRegistration(
@@ -42,6 +47,28 @@ class UserRepository {
       throw Exception(response.body);
     }
     return RegisterResponse.fromJson(jsonDecode(response.body));
+  }
+
+  Future<LoginUser> updateUserProfile(
+    String userId,
+    EditUserModel userModel,
+  ) async {
+    print(userModel.toJson().toString());
+    final response = await httpClient.postRequest(
+      endpoint: endpoints.updateProfileEndpoint(userId),
+      body: userModel.toJson(),
+    );
+    if (response?.statusCode != 200) {
+      throw Exception(response.body);
+    }
+    print(response.body);
+    LoginUser user = LoginUser.fromJson(jsonDecode(response.body));
+    if (user.phoneNumber == "") {
+      return null;
+    } else {
+      print("was called");
+      return user;
+    }
   }
 
   userVerification() {

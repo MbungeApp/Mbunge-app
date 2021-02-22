@@ -34,16 +34,20 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       final loginResponse = await userRepository.userLogin(
         loginRequest,
       );
-      print("##################################");
-      print("${loginResponse.token}");
-      print("##################################");
+      if (loginResponse != null) {
+        print("##################################");
+        print("${loginResponse.token}");
+        print("##################################");
 
-      await sharePreferenceRepo.saveUserId(loginResponse.user.id);
-      await sharePreferenceRepo.saveToken(loginResponse.token);
-      String userString = jsonEncode(loginResponse.user.toJson());
-      await sharePreferenceRepo.saveUser(userString);
+        await sharePreferenceRepo.saveUserId(loginResponse.user.id);
+        await sharePreferenceRepo.saveToken(loginResponse.token);
+        String userString = jsonEncode(loginResponse.user.toJson());
+        await sharePreferenceRepo.saveUser(userString);
 
-      yield LoginSuccess(loginResponse.user);
+        yield LoginSuccess(loginResponse.user);
+      } else {
+        yield LoginError();
+      }
     } catch (e) {
       print("Exception: $e");
       yield LoginError();

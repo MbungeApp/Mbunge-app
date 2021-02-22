@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mbunge/models/event.dart';
+import 'package:mbunge/models/login_response.dart';
 import 'package:mbunge/models/register_request.dart';
 import 'package:mbunge/pages/account/account.dart';
 import 'package:mbunge/pages/decision.dart';
@@ -35,7 +36,7 @@ class AppRouter {
       case homeRoute:
         return _route(MainScreen());
       case editProfileRoute:
-        User user = args;
+        LoginUser user = args;
         return _route(EditProfile(
           user: user,
         ));

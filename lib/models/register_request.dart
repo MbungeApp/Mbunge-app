@@ -43,7 +43,7 @@ class User {
     this.emailAddress,
     this.password,
     this.phoneNumber,
-    // this.dateBirth,
+    this.dateBirth,
     this.county,
     this.gender,
   });
@@ -53,7 +53,7 @@ class User {
   String emailAddress;
   String password;
   String phoneNumber;
-  // DateTime dateBirth;
+  DateTime dateBirth;
   String county;
   int gender;
 
@@ -61,7 +61,7 @@ class User {
         firstName: json["first_name"],
         lastName: json["last_name"],
         emailAddress: json["email_address"],
-        // dateBirth: DateTime.parse(json["date_birth"]),
+        dateBirth: DateTime.parse(json["date_birth"]),
         password: json["password"],
         phoneNumber: json["phone_number"],
         county: json["county"],
@@ -74,7 +74,7 @@ class User {
         "email_address": emailAddress,
         "password": password,
         "phone_number": phoneNumber,
-        // "date_birth": dateBirth.toIso8601String(),
+        "date_birth": dateBirth.toIso8601String(),
         "county": county,
         "gender": gender,
       };

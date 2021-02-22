@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mbunge/cubit/authentication/authentication_bloc.dart';
+import 'package:mbunge/models/login_response.dart';
 import 'package:mbunge/models/register_request.dart';
 import 'dart:math' as math;
 
@@ -24,7 +25,7 @@ class _ProfilePageState extends State<ProfilePage>
         AutomaticKeepAliveClientMixin<ProfilePage> {
   AuthenticationBloc _authenticationBloc;
   final SharePreferenceRepo sharePreferenceRepo = SharePreferenceRepo();
-  User user;
+  LoginUser user;
   bool isIos = true; //Platform.isIOS;
   AnimationController _controller;
 
@@ -110,7 +111,7 @@ class _ProfilePageState extends State<ProfilePage>
     if (userString != null || userString.isNotEmpty) {
       try {
         final userMap = jsonDecode(userString);
-        user = User.fromJson(userMap);
+        user = LoginUser.fromJson(userMap);
       } catch (e) {}
     }
   }
@@ -373,21 +374,28 @@ class _ProfilePageState extends State<ProfilePage>
                     ListTile(
                       title: Text("Personal"),
                       subtitle: Text("Edit my account details"),
-                      onTap: () {
-                        Navigator.pushNamed(
+                      onTap: () async {
+                        final res = await Navigator.pushNamed(
                           context,
                           AppRouter.editProfileRoute,
                           arguments: user,
                         );
+                        if (res != null) {
+                          print("*******************************************");
+                          print(res);
+                          setState(() {
+                            user = res;
+                          });
+                        }
                       },
                     ),
-                    ListTile(
-                      title: Text("Leave mbunge app"),
-                      subtitle: Text(
-                        "Permanently delete your account from our system",
-                      ),
-                      onTap: () {},
-                    ),
+                    // ListTile(
+                    //   title: Text("Leave mbunge app"),
+                    //   subtitle: Text(
+                    //     "Permanently delete your account from our system",
+                    //   ),
+                    //   onTap: () {},
+                    // ),
                     ListTile(
                       title: Text("Logout"),
                       subtitle: Text(

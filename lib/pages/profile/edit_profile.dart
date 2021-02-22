@@ -1,9 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mbunge/models/register_request.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mbunge/cubit/cubit/updateprofile_cubit.dart';
+import 'package:mbunge/models/edit_user_model.dart';
+import 'package:mbunge/models/login_response.dart';
+import 'package:mbunge/repository/share_preferences.dart';
+import 'package:mbunge/repository/user_repository.dart';
+import 'package:mbunge/util/constants.dart';
 
 class EditProfile extends StatefulWidget {
-  final User user;
+  final LoginUser user;
 
   const EditProfile({Key key, this.user}) : super(key: key);
   @override
@@ -12,6 +18,7 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile>
     with SingleTickerProviderStateMixin {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   ValueNotifier<int> genderStream;
   AnimationController animationController;
   Animation<double> nameOffset;
@@ -24,15 +31,21 @@ class _EditProfileState extends State<EditProfile>
   Animation<double> _countyOpacity;
   Animation<double> _buttonsOpacity;
 
-  User get profile => widget.user;
+  LoginUser get profile => widget.user;
 
   TextEditingController firstNameController;
   TextEditingController secondNameController;
   TextEditingController emailController;
   TextEditingController countyController;
 
+  UpdateprofileCubit updateprofileCubit;
+
   @override
   void initState() {
+    updateprofileCubit = UpdateprofileCubit(
+      UserRepository(),
+      SharePreferenceRepo(),
+    );
     super.initState();
     animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 1500))
@@ -83,6 +96,15 @@ class _EditProfileState extends State<EditProfile>
     countyController = TextEditingController(text: profile?.county);
   }
 
+  void showInSnackBar(String value, Color bgColor) {
+    _scaffoldKey.currentState.showSnackBar(
+      SnackBar(
+        backgroundColor: bgColor,
+        content: Text(value),
+      ),
+    );
+  }
+
   @override
   void dispose() {
     firstNameController.dispose();
@@ -97,44 +119,72 @@ class _EditProfileState extends State<EditProfile>
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     ThemeData theme = Theme.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Edit Profile"),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            animationController.reverse().whenComplete(() {
-              Navigator.pop(context);
-            });
-          },
+    return BlocProvider(
+      create: (context) => updateprofileCubit,
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          title: Text("Edit Profile"),
+          brightness: Brightness.light,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              animationController.reverse().whenComplete(() {
+                Navigator.pop(context);
+              });
+            },
+          ),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                buildNameWidget(size, context),
-                buildEmailWidget(size, context),
-                buildCountyWidget(size, context),
-                buildGenderWidget(theme),
-                Opacity(
-                  opacity: _buttonsOpacity.value,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        buildDoneButton(context, genderStream.value),
-                        buildCancelButton(context, genderStream.value),
-                      ],
-                    ),
-                  ),
-                )
-              ],
+        body: BlocListener(
+          cubit: updateprofileCubit,
+          listener: (context, state) {
+            if (state is Updateprofilesuccess) {
+              showInSnackBar(
+                "Updated successfully",
+                Colors.green,
+              );
+              Future.delayed(
+                Duration(seconds: 1),
+                () {
+                  Navigator.of(context).pop(state.user);
+                },
+              );
+            }
+            if (state is UpdateprofileError) {
+              showInSnackBar(
+                state.message,
+                Colors.orange,
+              );
+            }
+          },
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+            child: Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    buildNameWidget(size, context),
+                    buildEmailWidget(size, context),
+                    buildCountyWidget(size, context),
+                    buildGenderWidget(theme),
+                    Opacity(
+                      opacity: _buttonsOpacity.value,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            buildDoneButton(context, genderStream.value),
+                            buildCancelButton(context, genderStream.value),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -247,47 +297,7 @@ class _EditProfileState extends State<EditProfile>
         ),
       ),
       onPressed: () {
-        //   FocusScope.of(context).unfocus();
-        //   if (profile.name.trim() != userNameController.text.trim() ||
-        //       profile.about != statusController.text.trim() ||
-        //       profile.gender != i) {
-        //     showCupertinoDialog(
-        //       context: context,
-        //       builder: (BuildContext dialogcontext) {
-        //         return CupertinoAlertDialog(
-        //           title: Text(AppLocalizations.of(context).waiAMinute),
-        //           content: Text(AppLocalizations.of(context).unsavedChanges),
-        //           actions: <Widget>[
-        //             FlatButton(
-        //               child: Text(AppLocalizations.of(context).saveChanges),
-        //               onPressed: () {
-        //                 updateDetails(i);
-        //                 animationController.reverse().whenComplete(() {
-        //                   Navigator.pop(context);
-        //                 });
-        //               },
-        //             ),
-        //             FlatButton(
-        //               child: Text(
-        //                 AppLocalizations.of(context).ignoreChanges,
-        //               ),
-        //               onPressed: () {
-        //                 Navigator.pop(dialogcontext);
-        //                 animationController.reverse().whenComplete(() {
-        //                   Navigator.pop(context);
-        //                 });
-        //               },
-        //             )
-        //           ],
-        //         );
-        //       },
-        //     );
-        //   } else {
-        //     animationController.reverse().whenComplete(() {
-        //       Navigator.pop(context);
-        //     });
-        //   }
-        // },
+        Navigator.pop(context);
       },
     );
   }
@@ -314,6 +324,18 @@ class _EditProfileState extends State<EditProfile>
       ),
       onPressed: () {
         FocusScope.of(context).unfocus();
+        EditUserModel editUserModel = EditUserModel(
+          county: countyController.text,
+          emailAddress: emailController.text,
+          firstName: firstNameController.text,
+          gender: genderStream.value,
+          phoneNumber: profile.phoneNumber,
+          lastName: secondNameController.text,
+        );
+        updateprofileCubit.updateProfile(
+          profile.id,
+          editUserModel,
+        );
         // updateDetails(i);
       },
     );
@@ -452,9 +474,17 @@ class _EditProfileState extends State<EditProfile>
                 child: Text("County"),
               ),
               SizedBox(height: 5),
-              TextFormField(
-                textCapitalization: TextCapitalization.sentences,
-                controller: countyController,
+              DropdownButtonFormField(
+                hint: Text("Select county"),
+                value: countyController.text,
+                items: counties.map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(
+                      value,
+                    ),
+                  );
+                }).toList(),
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.only(left: 5),
                   focusedBorder: OutlineInputBorder(
@@ -465,6 +495,9 @@ class _EditProfileState extends State<EditProfile>
                     borderSide: BorderSide(),
                   ),
                 ),
+                onChanged: (String value) {
+                  countyController.text = value;
+                },
               ),
             ],
           ),
@@ -472,118 +505,4 @@ class _EditProfileState extends State<EditProfile>
       ),
     );
   }
-
-  // updateDetails(int i) {
-  //   // check if any field has changed
-  //   // 1. username
-  //   if (profile.name.trim() != userNameController.text.trim()) {
-  //     Toast.show("Updating username", context);
-  //     var res = locator<UserAndProfilesBloc>().profilePropertyChange(
-  //       key: "name",
-  //       value: userNameController.text.trim(),
-  //       profile: profile,
-  //     );
-  //     if (res != null) {
-  //       Toast.show(
-  //         "Updated username successfully",
-  //         context,
-  //         backgroundColor: Colors.green,
-  //       );
-  //     } else {
-  //       Toast.show(
-  //         "Error occured in updating username",
-  //         context,
-  //         backgroundColor: Colors.redAccent,
-  //       );
-  //     }
-  //   }
-
-  //   // 2. status
-  //   if (profile.about.trim() != statusController.text.trim()) {
-  //     Toast.show("Updating status", context);
-  //     locator<UserAndProfilesBloc>()
-  //         .profilePropertyChange(
-  //       key: "about",
-  //       value: statusController.text.trim(),
-  //       profile: profile,
-  //     )
-  //         .then(
-  //       (res) {
-  //         Log.i(res.about);
-  //         if (res != null) {
-  //           Toast.show(
-  //             "updated status successfully",
-  //             context,
-  //             backgroundColor: Colors.green,
-  //           );
-  //         } else {
-  //           Toast.show(
-  //             "Error occured in updating status",
-  //             context,
-  //             backgroundColor: Colors.redAccent,
-  //           );
-  //         }
-  //       },
-  //     );
-  //   }
-
-  //   // // 3. occupation
-  //   // if (profile.occupation.trim() != occupationController.text.trim()) {
-  //   //   Toast.show("Updating occupation", context);
-  //   //   var res = locator<UserAndProfilesBloc>().profilePropertyChange(
-  //   //     key: "occupation",
-  //   //     value: occupationController.text.trim(),
-  //   //     profile: profile,
-  //   //   );
-  //   //   if (res != null) {
-  //   //     Toast.show(
-  //   //       "Updated occupation successfully",
-  //   //       context,
-  //   //       backgroundColor: Colors.green,
-  //   //     );
-  //   //   } else {
-  //   //     Toast.show(
-  //   //       "Error occured in updating occupation",
-  //   //       context,
-  //   //       backgroundColor: Colors.redAccent,
-  //   //     );
-  //   //   }
-  //   // }
-
-  //   // 4. gender
-  //   if (profile.gender != i) {
-  //     Toast.show("Updating gender", context);
-  //     var res = locator<UserAndProfilesBloc>().profilePropertyChange(
-  //       key: "gender",
-  //       value: i == 0
-  //           ? "male"
-  //           : i == 1
-  //               ? "female"
-  //               : i == 2
-  //                   ? "undisclosed"
-  //                   : null,
-  //       profile: profile,
-  //     );
-  //     if (res != null) {
-  //       Toast.show(
-  //         "Updated gender successfully",
-  //         context,
-  //         backgroundColor: Colors.green,
-  //       );
-  //     } else {
-  //       Toast.show(
-  //         "Error occured in updating gender",
-  //         context,
-  //         backgroundColor: Colors.redAccent,
-  //       );
-  //     }
-  //   }
-
-  //   // ## DONE ##
-  //   Future.delayed(Duration(seconds: 1), () {
-  //     animationController.reverse().whenComplete(() {
-  //       Navigator.pop(context);
-  //     });
-  //   });
-  // }
 }
