@@ -260,7 +260,7 @@ class _RegisterPage1State extends State<RegisterPage1> {
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
-    dateController.text = date.toUtc().toString();
+    dateController.text = date.toUtc().toIso8601String();
   }
 
   Widget buildEmail() {
@@ -271,6 +271,7 @@ class _RegisterPage1State extends State<RegisterPage1> {
         onSaved: (value) {
           user.emailAddress = value;
         },
+        validator: validateEmail,
         decoration: InputDecoration(
           labelText: "Email Address",
           prefixIcon: Icon(
@@ -359,6 +360,7 @@ class _RegisterPage1State extends State<RegisterPage1> {
           if (_formKey.currentState.validate()) {
             _formKey.currentState.save();
             user.gender = genderValue;
+            user.dateBirth = DateTime.parse(dateController.text);
             registerRequest.user = user;
             registerRequest.type = "mobile";
             registerRequest.fcmToken = "";
@@ -367,5 +369,17 @@ class _RegisterPage1State extends State<RegisterPage1> {
         },
       ),
     );
+  }
+
+  String validateEmail(String value) {
+    Pattern pattern =
+        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?)*$";
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value) || value == null)
+      return 'Enter a valid email address';
+    else
+      return null;
   }
 }
