@@ -64,7 +64,7 @@ class _LiveStreamPageState extends State<LiveStreamPage> {
       child: Scaffold(
         appBar: AppBar(
           brightness: Brightness.light,
-          title: Text("Livestream: ${remoteUid.length ?? 0}"),
+          title: Text("Livestream Session"),
           actions: [
             IconButton(
               icon: Icon(Icons.close),
@@ -113,7 +113,12 @@ class _LiveStreamPageState extends State<LiveStreamPage> {
                     ),
               Align(
                 alignment: Alignment.topRight,
-                child: Text("${remoteUid.length} audience"),
+                child: remoteUid.length != 0
+                    ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("${remoteUid.length} Speaker"),
+                      )
+                    : SizedBox.shrink(),
               )
             ],
           ),

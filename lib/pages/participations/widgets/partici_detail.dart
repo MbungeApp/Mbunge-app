@@ -3,11 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:mbunge/cubit/responses/getresponses_bloc.dart';
-import 'package:mbunge/models/reponses.dart';
+import 'package:mbunge/cubit/cubit/questioncubit_cubit.dart';
 import 'package:mbunge/models/webinar_model.dart';
 import 'package:mbunge/pages/participations/widgets/add_reponse.dart';
 import 'package:mbunge/pages/participations/widgets/live_stream.dart';
+import 'package:mbunge/repository/share_preferences.dart';
 import 'package:mbunge/repository/webinar_repository.dart';
 import 'package:mbunge/widgets/readmore.dart';
 
@@ -23,8 +23,7 @@ class ParticipationDetail extends StatefulWidget {
 
 class _ParticipationDetailState extends State<ParticipationDetail> {
   WebinarModel get webinarModel => widget.webinarModel;
-  List<Responses> responses;
-  GetresponsesBloc getresponsesBloc;
+  QuestioncubitCubit questioncubitCubit;
   final _listKey = GlobalKey<AnimatedListState>();
   DateTime current = DateTime.now().toUtc();
   Stream timer;
@@ -35,8 +34,11 @@ class _ParticipationDetailState extends State<ParticipationDetail> {
       current = current.add(Duration(seconds: 1));
       return current;
     }).asBroadcastStream();
-    getresponsesBloc = GetresponsesBloc(WebinarRepository());
-    getresponsesBloc.add(FetchResponses(webinarModel.id));
+    questioncubitCubit = QuestioncubitCubit(
+      WebinarRepository(),
+      SharePreferenceRepo(),
+    );
+    questioncubitCubit.fetchQuestions(webinarModel.id);
     super.initState();
   }
 
@@ -48,7 +50,7 @@ class _ParticipationDetailState extends State<ParticipationDetail> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getresponsesBloc,
+      create: (context) => questioncubitCubit,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
@@ -207,12 +209,13 @@ class _ParticipationDetailState extends State<ParticipationDetail> {
                     "Questions:",
                   ),
                 ),
-                BlocBuilder<GetresponsesBloc, GetresponsesState>(
+                BlocBuilder(
+                  cubit: questioncubitCubit,
                   builder: (context, state) {
-                    if (state is GetresponsesInitial) {
+                    if (state is QuestioncubitInitial) {
                       return Center(child: CupertinoActivityIndicator());
                     }
-                    if (state is GetresponsesError) {
+                    if (state is QuestioncubitError) {
                       return Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: Text(
@@ -224,8 +227,8 @@ class _ParticipationDetailState extends State<ParticipationDetail> {
                         ),
                       );
                     }
-                    if (state is GetresponsesLoaded) {
-                      responses = state.responses;
+                    if (state is QuestioncubitSuccess) {
+                      final responses = state.responses;
 
                       if (responses.isEmpty) {
                         return Center(child: Text("No Responses"));
@@ -250,9 +253,8 @@ class _ParticipationDetailState extends State<ParticipationDetail> {
                                 ),
                               ),
                               isThreeLine: true,
-                              title: Text(
-                                  "@${responses[index].user.firstName}"
-                                      .toLowerCase()),
+                              title: Text("@${responses[index].user.firstName}"
+                                  .toLowerCase()),
                               subtitle: Text("${responses[index].body}"),
                             );
                           },
@@ -288,32 +290,10 @@ class _ParticipationDetailState extends State<ParticipationDetail> {
               openBuilder: (BuildContext context, VoidCallback results) {
                 return AddReponse(
                   particiId: webinarModel.id,
-                  getresponsesBloc: getresponsesBloc,
+                  questioncubitCubit: questioncubitCubit,
                 );
               },
-              onClosed: (results) {
-                if (results != null) {
-                  print("Length before: ${responses?.length ?? 0}");
-                  print("$results");
-                  getresponsesBloc.add(
-                    FetchResponses(webinarModel.id),
-                  );
-                  setState(() {
-                    if (responses == null) {
-                      responses = List();
-                      responses.add(results);
-                    } else {
-                      responses.add(results);
-                    }
-                  });
-
-                  // _listKey.currentState.insertItem(
-                  //   0,
-                  //   duration: const Duration(milliseconds: 500),
-                  // );
-                  print("Length after: ${responses?.length ?? 0}");
-                }
-              },
+              onClosed: (results) {},
               closedElevation: 6.0,
               closedShape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(

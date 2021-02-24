@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:mbunge/cubit/webinar/webinar_cubit.dart';
 import 'package:mbunge/pages/participations/widgets/partici_detail.dart';
 import 'package:mbunge/pages/participations/widgets/partici_item.dart';
 import 'package:mbunge/repository/webinar_repository.dart';
+import 'package:mbunge/widgets/error_wdget.dart';
 import 'package:mbunge/widgets/shimmer.dart';
 
 class ParticipationPage extends StatefulWidget {
@@ -46,55 +48,69 @@ class _ParticipationPageState extends State<ParticipationPage> {
           child: Stack(
             children: <Widget>[
               buildClipPath(context),
-              BlocBuilder(
+              BlocListener(
                 cubit: webinarCubit,
-                builder: (context, state) {
-                  if (state is WebinarInitial) {
-                    return WebinarLoader(size: size);
-                  }
-                  if (state is WebinarError) {
-                    return Center(
-                      child: Text("Error"),
-                    );
-                  }
+                listener: (context, state) {
                   if (state is WebinarSuccess) {
-                    final webinars = state.webinars;
-                    return Padding(
-                      padding:
-                          EdgeInsets.fromLTRB(5, kToolbarHeight / 1.5, 5, 0),
-                      child: CupertinoScrollbar(
-                        child: ListView.separated(
-                          itemCount: webinars.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            if (index == 0) {
-                              return buildBanner(context);
-                            } else {
-                              return InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    CupertinoPageRoute(builder: (context) {
-                                      return ParticipationDetail(
-                                        webinarModel: webinars[index],
-                                      );
-                                    }),
-                                  );
-                                },
-                                child: ParticipationItem(
-                                  webinarModel: webinars[index],
-                                ),
-                              );
-                            }
-                          },
-                          separatorBuilder: (BuildContext context, int index) {
-                            return Divider();
-                          },
-                        ),
-                      ),
-                    );
+                    _refreshCompleter?.complete();
+                    _refreshCompleter = Completer();
                   }
-                  return Container();
                 },
+                child: BlocBuilder(
+                  cubit: webinarCubit,
+                  builder: (context, state) {
+                    if (state is WebinarInitial) {
+                      return Center(
+                        child: Image.asset("assets/images/loading.gif"),
+                      );
+                      //return WebinarLoader(size: size);
+                    }
+
+                    if (state is WebinarError) {
+                      return ErrorAppWidget(
+                        message: "An error occured",
+                      );
+                    }
+                    if (state is WebinarSuccess) {
+                      final webinars = state.webinars;
+                      return Padding(
+                        padding:
+                            EdgeInsets.fromLTRB(5, kToolbarHeight / 1.5, 5, 0),
+                        child: CupertinoScrollbar(
+                          child: ListView.separated(
+                            itemCount: webinars.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              if (index == 0) {
+                                return buildBanner(context);
+                              } else {
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      CupertinoPageRoute(builder: (context) {
+                                        return ParticipationDetail(
+                                          webinarModel: webinars[index],
+                                        );
+                                      }),
+                                    );
+                                  },
+                                  child: ParticipationItem(
+                                    webinarModel: webinars[index],
+                                  ),
+                                );
+                              }
+                            },
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return Divider();
+                            },
+                          ),
+                        ),
+                      );
+                    }
+                    return Container();
+                  },
+                ),
               ),
             ],
           ),

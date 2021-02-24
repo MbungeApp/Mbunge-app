@@ -18,6 +18,7 @@ dependencies:
   equatable: ^1.2.5
   firebase_core: null
   firebase_messaging: null
+  flare_flutter: ^2.0.6
   flutter_bloc: ^6.1.1
   flutter_local_notifications: 1.4.3
   flutter_snake_navigationbar: ^0.4.2

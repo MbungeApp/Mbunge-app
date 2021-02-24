@@ -12,6 +12,7 @@ class EventCubit extends Cubit<EventState> {
 
   Future<void> getEvents() async {
     try {
+      print("*********************");
       final List<Event> events = await eventRepository.getEvents();
       events.insert(0, null);
       emit(EventsLoaded(events: events));

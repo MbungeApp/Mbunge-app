@@ -7,6 +7,7 @@ import 'package:mbunge/cubit/event/event_cubit.dart';
 import 'package:mbunge/models/event.dart';
 import 'package:mbunge/repository/event_repository.dart';
 import 'package:mbunge/util/routes.dart';
+import 'package:mbunge/widgets/error_wdget.dart';
 import 'package:shimmer/shimmer.dart';
 import 'widgets/event_item.dart';
 
@@ -17,9 +18,11 @@ class EventPage extends StatefulWidget {
 
 class _EventPageState extends State<EventPage> {
   Completer<void> _refreshCompleter;
+  EventCubit eventCubit;
 
   @override
   void initState() {
+    eventCubit = EventCubit(EventRepository())..getEvents();
     _refreshCompleter = Completer<void>();
     super.initState();
   }
@@ -31,68 +34,68 @@ class _EventPageState extends State<EventPage> {
         children: [
           buildClipPath(context),
           BlocProvider(
-            create: (context) => EventCubit(EventRepository())..getEvents(),
+            create: (context) => eventCubit,
             child: RefreshIndicator(
               onRefresh: () async {
-                await BlocProvider.of<EventCubit>(context).getEvents();
+                await eventCubit.getEvents();
                 return _refreshCompleter.future;
               },
-              child: BlocBuilder<EventCubit, EventState>(
-                builder: (context, state) {
-                  if (state is EventInitial) {
-                    return Center(
-                      child: Shimmer(
-                        gradient: LinearGradient(
-                          colors: [Colors.grey, Colors.white],
-                        ),
-                        child: Text(
-                          "Mbunge App",
-                          style: Theme.of(context).textTheme.headline6,
-                        ),
-                      ),
-                    );
-                  }
-                  if (state is EventsError) {
-                    return Center(
-                      child: Text("Error"),
-                    );
-                  }
+              child: BlocListener<EventCubit, EventState>(
+                listener: (context, state) {
                   if (state is EventsLoaded) {
-                    List<Event> events = state.events;
-                    // _events.insert(0, null);
-                    // List<Event> events = _events;
-                    return Padding(
-                      padding:
-                          EdgeInsets.fromLTRB(5, kToolbarHeight / 1.5, 5, 0),
-                      child: ListView.builder(
-                        itemCount: events.length,
-                        itemBuilder: (context, i) {
-                          if (i == 0) {
-                            return buildBanner(context);
-                          } else {
-                            return EventItem(
-                              name: events[i].name,
-                              body: events[i].body,
-                              created: events[i].createdAt,
-                              image: events[i].picture,
-                              ontap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  AppRouter.eventDetailRoute,
-                                  arguments: events[i],
-                                );
-                              },
-                            );
-                          }
-                        },
-                        // separatorBuilder: (BuildContext context, int index) {
-                        //   return Divider();
-                        // },
-                      ),
-                    );
+                    _refreshCompleter?.complete();
+                    _refreshCompleter = Completer();
                   }
-                  return Container();
                 },
+                child: BlocBuilder<EventCubit, EventState>(
+                  builder: (context, state) {
+                    if (state is EventInitial) {
+                      return Center(
+                        child: Image.asset("assets/images/loading.gif"),
+                      );
+                    }
+                    if (state is EventsError) {
+                      return ErrorAppWidget(
+                        message: "An error occured",
+                      );
+                    }
+                    if (state is EventsLoaded) {
+                      List<Event> events = state.events;
+                      // _events.insert(0, null);
+                      // List<Event> events = _events;
+                      return Padding(
+                        padding:
+                            EdgeInsets.fromLTRB(5, kToolbarHeight / 1.5, 5, 0),
+                        child: ListView.builder(
+                          itemCount: events.length,
+                          itemBuilder: (context, i) {
+                            if (i == 0) {
+                              return buildBanner(context);
+                            } else {
+                              return EventItem(
+                                name: events[i].name,
+                                body: events[i].body,
+                                created: events[i].createdAt,
+                                image: events[i].picture,
+                                ontap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    AppRouter.eventDetailRoute,
+                                    arguments: events[i],
+                                  );
+                                },
+                              );
+                            }
+                          },
+                          // separatorBuilder: (BuildContext context, int index) {
+                          //   return Divider();
+                          // },
+                        ),
+                      );
+                    }
+                    return Container();
+                  },
+                ),
               ),
             ),
           ),

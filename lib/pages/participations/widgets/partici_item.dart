@@ -54,13 +54,20 @@ class ParticipationItem extends StatelessWidget {
                       child: Text(
                         "${webinarModel.description}",
                         overflow: TextOverflow.ellipsis,
-                        maxLines: 3,
+                        maxLines: 2,
                       ),
                     ),
                   ),
                   Text(
                     "By ${webinarModel.hostedBy}",
                     style: TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    "Postponed: ${webinarModel.postponed}",
+                    style: Theme.of(context).textTheme.caption.copyWith(
+                          fontStyle: FontStyle.italic,
+                        ),
                   )
                 ],
               ),

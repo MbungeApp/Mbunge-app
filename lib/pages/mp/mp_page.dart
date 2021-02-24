@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mbunge/cubit/mps/mps_cubit.dart';
 import 'package:mbunge/models/mp.dart';
+import 'package:mbunge/pages/mp/widgets/mp_detail.dart';
 import 'package:mbunge/repository/mp_repository.dart';
+import 'package:mbunge/widgets/error_wdget.dart';
 import 'package:shimmer/shimmer.dart';
 
 class MPPage extends StatefulWidget {
@@ -16,8 +18,10 @@ class MPPage extends StatefulWidget {
 
 class _MPPageState extends State<MPPage> {
   Completer<void> _refreshCompleter;
+  MpsCubit mpsCubit;
   @override
   void initState() {
+    mpsCubit = MpsCubit(MpRepository())..getMps();
     _refreshCompleter = Completer<void>();
     super.initState();
   }
@@ -32,107 +36,66 @@ class _MPPageState extends State<MPPage> {
         children: [
           buildClipPath(context),
           BlocProvider(
-            create: (context) => MpsCubit(MpRepository())..getMps(),
+            create: (context) => mpsCubit,
             child: RefreshIndicator(
               onRefresh: () async {
-                await BlocProvider.of<MpsCubit>(context).getMps();
+                await mpsCubit.getMps();
                 return _refreshCompleter.future;
               },
-              child: BlocBuilder<MpsCubit, MpsState>(
-                builder: (context, state) {
-                  if (state is MpsInitial) {
-                    return Center(
-                      child: Shimmer(
-                        gradient: LinearGradient(
-                          colors: [Colors.grey, Colors.white],
-                        ),
-                        child: Text(
-                          "Mbunge App",
-                          style: Theme.of(context).textTheme.headline6,
-                        ),
-                      ),
-                    );
-                  }
-                  if (state is MpsError) {
-                    return Center(
-                      child: Text("Error"),
-                    );
-                  }
+              child: BlocListener<MpsCubit, MpsState>(
+                listener: (context, state) {
                   if (state is MpsLoaded) {
-                    final List<MPs> mps = state.mps;
-                    return Padding(
-                      padding:
-                          EdgeInsets.fromLTRB(5, kToolbarHeight / 1.5, 5, 0),
-                      child: ListView.separated(
-                        itemCount: mps.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          if (index == 0) {
-                            return buildBanner(context);
-                          } else {
-                            return Card(
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  ConstrainedBox(
-                                    constraints: BoxConstraints.expand(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.2,
-                                      width: MediaQuery.of(context).size.width *
-                                          0.3,
-                                    ),
-                                    child: CachedNetworkImage(
-                                      fit: BoxFit.cover,
-                                      imageUrl: mps[index].image,
-                                      placeholder: (context, url) => Center(
-                                        child: CircularProgressIndicator(),
-                                      ),
-                                      errorWidget: (context, url, error) =>
-                                          Icon(Icons.error),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        Text(
-                                          mps[index].name,
-                                          style: TextStyle(
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.w600),
-                                        ),
-                                        Opacity(
-                                          opacity: 0.8,
-                                          child: Text(
-                                            mps[index].constituency +
-                                                " : " +
-                                                mps[index].county,
-                                            style: TextStyle(fontSize: 14),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            );
-                          }
-                        },
-                        separatorBuilder: (BuildContext context, int index) {
-                          return Divider();
-                        },
-                      ),
-                    );
+                    _refreshCompleter?.complete();
+                    _refreshCompleter = Completer();
                   }
-                  return Container();
                 },
+                child: BlocBuilder<MpsCubit, MpsState>(
+                  builder: (context, state) {
+                    if (state is MpsInitial) {
+                      return Center(
+                        child: Image.asset("assets/images/loading.gif"),
+                      );
+                    }
+                    if (state is MpsError) {
+                      return ErrorAppWidget(
+                        message: "An error occured",
+                      );
+                    }
+                    if (state is MpsLoaded) {
+                      final List<MPs> mps = state.mps;
+                      return Padding(
+                        padding:
+                            EdgeInsets.fromLTRB(5, kToolbarHeight / 1.5, 5, 0),
+                        child: ListView.separated(
+                          itemCount: mps.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            if (index == 0) {
+                              return buildBanner(context);
+                            } else {
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(builder: (context) {
+                                      return MpDetailPage(
+                                        mPs: mps[index],
+                                      );
+                                    }),
+                                  );
+                                },
+                                child: MpItem(mps: mps[index]),
+                              );
+                            }
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return Divider();
+                          },
+                        ),
+                      );
+                    }
+                    return Container();
+                  },
+                ),
               ),
             ),
           ),
@@ -182,6 +145,101 @@ class _MPPageState extends State<MPPage> {
             "List of members of parliament an their info",
             style: TextStyle(color: Colors.white60),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class MpItem extends StatelessWidget {
+  const MpItem({
+    Key key,
+    @required this.mps,
+  }) : super(key: key);
+
+  final MPs mps;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        // mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ClipRRect(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(5),
+              bottomLeft: Radius.circular(5),
+            ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints.expand(
+                height: MediaQuery.of(context).size.height * 0.2,
+                width: MediaQuery.of(context).size.width * 0.3,
+              ),
+              child: CachedNetworkImage(
+                fit: BoxFit.cover,
+                imageUrl: mps.image,
+                placeholder: (context, url) => Center(
+                  child: CircularProgressIndicator(),
+                ),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
+            ),
+          ),
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.only(
+                left: 15.0,
+                right: 5.0,
+                top: 8.0,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    mps.name,
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  Opacity(
+                    opacity: 0.9,
+                    child: Text(
+                      mps.county + " : " + mps.constituency,
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  Wrap(
+                    children: [
+                      Opacity(
+                        opacity: 0.8,
+                        child: Text(
+                          mps.bio,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ),
+                      SizedBox(width: 5),
+                      InkWell(
+                        onTap: () {},
+                        child: Text(
+                          "Continue to read more",
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          )
         ],
       ),
     );

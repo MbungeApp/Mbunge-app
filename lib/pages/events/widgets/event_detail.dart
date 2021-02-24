@@ -23,6 +23,7 @@ class _EventDetailState extends State<EventDetail> {
         slivers: <Widget>[
           SliverAppBar(
             // title: Text("SliverAppBar Title"),
+            brightness: Brightness.light,
             centerTitle: true,
             expandedHeight: deviceSize.height,
             pinned: true,
